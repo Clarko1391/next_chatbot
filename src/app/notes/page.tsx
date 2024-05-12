@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     title: 'Notes.ai | Notes'
 }
 
-export default async function NotePage() {
+export default async function NotesPage() {
     const { userId } = auth()
 
     if (!userId) throw Error('userId is undefined, please log in to continue')
