@@ -42,7 +42,8 @@ export async function POST(req: Request) {
                 }
             });
 
-            // NOTE: prisma cannot transact Pinecone, however, by sequencing the Pinecone op 2nd we can emulate it
+            // NOTE: prisma cannot transact Pinecone, however, by sequencing the Pinecone op 2nd we can treat it
+            // as though it will be part of the transaction
             await notesIndex.upsert([
                 {
                     id: note.id,
@@ -53,8 +54,6 @@ export async function POST(req: Request) {
 
             return note;
         })
-
-        
 
         return Response.json(note, { status: 201 })
 
@@ -104,12 +103,27 @@ export async function PUT(req: Request) {
             )
         }
 
-        const updated_note = await prisma.note.update({
-            where: {id},
-            data: {
-                title,
-                content
-            }
+        const embedding = await getEmbeddingForNote(title, content);
+
+        const updated_note = await prisma.$transaction( async (tx) => {
+            
+            const updated_note = await prisma.note.update({
+                where: {id},
+                data: {
+                    title,
+                    content
+                }
+            })
+
+            await notesIndex.upsert([
+                {
+                    id: id,
+                    values: embedding,
+                    metadata: { userId }
+                }
+            ])
+
+            return updated_note
         })
 
         return Response.json({updated_note}, { status: 200 })
@@ -160,7 +174,10 @@ export async function DELETE(req: Request) {
             )
         }
 
-        await prisma.note.delete({ where: {id} })
+        await prisma.$transaction( async(tx) => {
+            await prisma.note.delete({ where: {id} })
+            await notesIndex.deleteOne(id)
+        })
 
         return Response.json({ message: 'Note Deleted' }, { status: 200 })
 

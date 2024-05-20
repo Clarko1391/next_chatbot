@@ -8,6 +8,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import AddEditNoteDialog from "@/components/AddEditNoteDIalog";
+import AIChatButton from "@/components/AIChatButton";
 
 export default function NavBar() {
     const [ showAddEditNote, setShowAddEditNote ] = useState<boolean>(false)
@@ -30,6 +31,7 @@ export default function NavBar() {
                             <Plus />
                             Add Note
                         </Button>
+                        <AIChatButton />
                     </div>
                 </div>
             </div>
