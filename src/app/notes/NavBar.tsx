@@ -7,10 +7,10 @@ import { SignOutButton, UserButton } from "@clerk/nextjs";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import AddNoteDialog from "@/components/AddNoteDIalog";
+import AddEditNoteDialog from "@/components/AddEditNoteDIalog";
 
 export default function NavBar() {
-    const [ showAddNote, setShowAddNote ] = useState<boolean>(false)
+    const [ showAddEditNote, setShowAddEditNote ] = useState<boolean>(false)
 
     return (
         <>
@@ -25,7 +25,7 @@ export default function NavBar() {
                     <div className="flex items-center gap-2">
                         <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: { width: '2.5rem', height: '2.5rem' } } }} />
                         <Button
-                            onClick={() => setShowAddNote(!showAddNote)}
+                            onClick={() => setShowAddEditNote(!showAddEditNote)}
                         >
                             <Plus />
                             Add Note
@@ -33,9 +33,9 @@ export default function NavBar() {
                     </div>
                 </div>
             </div>
-            <AddNoteDialog 
-                open={showAddNote}
-                setOpen={setShowAddNote}
+            <AddEditNoteDialog 
+                open={showAddEditNote}
+                setOpen={setShowAddEditNote}
             />
         </>
     )
