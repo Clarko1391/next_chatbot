@@ -13,8 +13,9 @@ export default async function NotesPage() {
     if (!userId) throw Error('userId is undefined, please log in to continue')
     
     console.log('fetching notes');
-    
-    const all_notes = await prisma.note.findMany({where: {userId}})
+
+    // const all_notes = await prisma.note.findMany({where: {userId}})
+    const all_notes: any[] = []
 
     return (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
